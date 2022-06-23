@@ -1,0 +1,17 @@
+# 服务的端口号
+server:
+  port: 7003
+# eureka的配置
+eureka:
+  instance:
+    # 主机名
+    hostname: eureka7003.com
+  client:
+    # 是否注册自己
+    register-with-eureka: false
+    # 声明自己是注册中心
+    fetch-registry: false
+    # eureka的访问地址
+    service-url:
+#      defaltZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+      defaultZone: http://eureka7002.com:7002/eureka/,http://eureka7001.com:7001/eureka/
