@@ -11,6 +11,16 @@
 
     <artifactId>springcloud-provider-dept-8001</artifactId>
     <dependencies>
+        <!--starter-eureka -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-eureka</artifactId>
+            <version>1.4.6.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
         <!--通过maven引入springcloud-api-->
         <dependency>
             <groupId>com.czy</groupId>

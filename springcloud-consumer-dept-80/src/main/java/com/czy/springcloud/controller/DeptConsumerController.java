@@ -17,7 +17,7 @@ public class DeptConsumerController {
     //自动注入RestTemplate
     @Autowired
     private RestTemplate restTemplate;
-    public static final String REQUESTURL="http://127.0.0.1:8001/";
+    public static final String REQUESTURL="http://SPRINGCLOUD-PROVIDER-DEPT/";
 
     /**
      * 按id查询的controller

@@ -1,0 +1,32 @@
+# 配置端口
+server:
+  port: 8002
+# 配置mybatis的配置信息以及包扫描，mapper文件等等
+mybatis:
+  type-aliases-package: com.czy.springcloud.pojo
+  mapper-locations: classpath:mybatis/mapper/*.xml
+
+# spring与数据源的配置
+spring:
+  application:
+    # 指明这个服务的名字
+    name: springcloud-provider-dept
+  datasource:
+    # 使用德鲁伊的数据源
+    type: com.alibaba.druid.pool.DruidDataSource
+    # 加载驱动，url，用户账户与密码
+    driver-class-name: org.gjt.mm.mysql.Driver
+    url: jdbc:mysql://localhost:3306/db2?useUnicode=true&characterEncoding=utf-8
+    username: root
+    password: '010713'
+# eureka配置，我们要将服务注册到哪里
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka7002.com:7002/eureka/,http://eureka7003.com:7003/eureka/,http://eureka7001.com:7001/eureka/
+  # 配置他的id也就是默认描述信息
+  instance:
+    instance-id: springcloud-provider-8002
+info:
+  app.name: springcloud-probider-dept
+  author: Planifolia.Van

@@ -210,3 +210,118 @@ public class DeptProvider_8001 {
     }
 }
 ```
+
+3.我们在springcloud-eureka-7001模块中已经吧eureka的服务端搭建好了，然后我们只需要吧我们之前写的客户端有也就是提供者模块注册到，eureka-service中就ok了，注册到eureka中其实很简单，只需要在yaml文件中编写服务端的对应地址，以及指明这个需要注册服务的名字，然后在从maven中引入eureka依赖，最后就是在启动类中添加注解。
+
+```yaml
+# eureka配置，我们要将服务注册到哪里
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:7001/eureka/
+  # 配置他的id也就是默认描述信息
+  instance:
+    instance-id: springcloud-provider-8001
+info:
+  app.name: springcloud-probider-dept
+  author: Planifolia.Van
+```
+
+```xml
+        <!--starter-eureka -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-eureka</artifactId>
+            <version>1.4.6.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+```
+
+4.**我们想要引入ribbon来作为负载均衡的工具**，首先我们就需要创建多个提供者，如项目中我们按照8001的模板创建了三个内容提供者端口号分为8001，8002，8003，然后这三个服务都会注册到我们的注册中心中，然后ribbon根据内部的负载均衡算法来选取使用哪一个内容提供者，引入了三个内容提供者自然需要三个数据库。具体步骤如下
+
+* 4.1 创建三个数据库db1 db2 db3，作为三个内容提供者的链接目标，可以使用我们预先创建好的db1作为数据源，具体内容在下面不再粘贴了
+* 4.2 按照8001的模板创建8002，8003，大部分内容只要复制粘贴即可，只需要修改yaml配置文件，修改配置文件中的端口号，数据库链接的位置，服务的id，这样这些提供者在启动的时候都会自动的注册到eureka注册中心中。
+
+```yaml
+application:
+    # 指明这个服务的名字
+    name: springcloud-provider-dept
+  datasource:
+    # 使用德鲁伊的数据源
+    type: com.alibaba.druid.pool.DruidDataSource
+    # 加载驱动，url，用户账户与密码
+    driver-class-name: org.gjt.mm.mysql.Driver
+    url: jdbc:mysql://localhost:3306/db1?useUnicode=true&characterEncoding=utf-8
+    username: root
+    password: '010713'
+# eureka配置，我们要将服务注册到哪里
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka7002.com:7002/eureka/,http://eureka7003.com:7003/eureka/,http://eureka7001.com:7001/eureka/
+  # 配置他的id也就是默认描述信息
+  instance:
+    instance-id: springcloud-provider-8001
+info:
+  app.name: springcloud-probider-dept
+  author: Planifolia.Van
+```
+
+```yaml
+# spring与数据源的配置
+spring:
+  application:
+    # 指明这个服务的名字
+    name: springcloud-provider-dept
+  datasource:
+    # 使用德鲁伊的数据源
+    type: com.alibaba.druid.pool.DruidDataSource
+    # 加载驱动，url，用户账户与密码
+    driver-class-name: org.gjt.mm.mysql.Driver
+    url: jdbc:mysql://localhost:3306/db2?useUnicode=true&characterEncoding=utf-8
+    username: root
+    password: '010713'
+# eureka配置，我们要将服务注册到哪里
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka7002.com:7002/eureka/,http://eureka7003.com:7003/eureka/,http://eureka7001.com:7001/eureka/
+  # 配置他的id也就是默认描述信息
+  instance:
+    instance-id: springcloud-provider-8002
+info:
+  app.name: springcloud-probider-dept
+  author: Planifolia.Van
+```
+
+```yaml
+# spring与数据源的配置
+spring:
+  application:
+    # 指明这个服务的名字
+    name: springcloud-provider-dept
+  datasource:
+    # 使用德鲁伊的数据源
+    type: com.alibaba.druid.pool.DruidDataSource
+    # 加载驱动，url，用户账户与密码
+    driver-class-name: org.gjt.mm.mysql.Driver
+    url: jdbc:mysql://localhost:3306/db3?useUnicode=true&characterEncoding=utf-8
+    username: root
+    password: '010713'
+# eureka配置，我们要将服务注册到哪里
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka7002.com:7002/eureka/,http://eureka7003.com:7003/eureka/,http://eureka7001.com:7001/eureka/
+  # 配置他的id也就是默认描述信息
+  instance:
+    instance-id: springcloud-provider-8003
+info:
+  app.name: springcloud-probider-dept
+  author: Planifolia.Van
+```
+
+* 4.3 别忘记修改启动类，然后接下来就是修改80端口里面的内容，具体见dept-80的readme文件

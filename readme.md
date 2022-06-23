@@ -20,3 +20,36 @@
 * 服务挂了怎么办（服务的熔断机制）
 
 这一套核心问题的解决方案就是springcloud，他是一种生态是基于springboot的
+
+3.Eureka对比zookeeper
+
+3.1 ACID原则与CAP原则
+
+（mysql，sqlservice，oracle）：这些的传统数据库都是遵循ACID原则
+
+A:原子性，C:一致性,I:隔离性,D:持久性
+
+（redis，mongdb）：这些缓存nosql都是遵循的CAP原则
+
+C:强一致性 A:可用性 P:分区容错性
+
+CAP:一般支持三进二也就是三者只能兼顾其二
+
+作为服务注册中心Eureka比zookeeper好在哪里
+
+一个分布式系统只能满足cap原则中的两个，由于分区容错性P是必须要兼备的，那么剩下的就在C/A中选其一
+
+* Eureka选择的是CP
+* Zookeeper选择的是CP
+
+Zookeeper的选举原则
+
+![image.png](./assets/1655949431733-image.png)
+
+Eureka的自我保护机制
+
+![image.png](./assets/1655949414299-image.png)
+
+在项目中eureka注册中心才算是服务端，内容提供者与消费者都是客户端
+
+综述：至此springcloud通过eureka配置的服务器集群以及使用ribbon进行负载均衡的本地demo告一段落了，在这个项目中8001-8003是作为服务的提供者，提供数据库的增删改查操作，并且将自身注册到eureka服务器中，而7001-7003作为eureka服务端，组成集群来管理注册的服务提供者，而80则是作为消费者来对8001-8003的服务进行消费，然后负载均衡也在80模块中实现，具体步骤可以看源码与各模块的自述文件。

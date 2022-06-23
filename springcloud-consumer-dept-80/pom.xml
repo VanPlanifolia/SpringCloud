@@ -21,6 +21,19 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+        <!-- ribbon -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-ribbon</artifactId>
+            <version>1.4.6.RELEASE</version>
+        </dependency>
+        <!--starter-eureka -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-eureka</artifactId>
+            <version>1.4.6.RELEASE</version>
+        </dependency>
+
     </dependencies>
     <properties>
         <maven.compiler.source>8</maven.compiler.source>

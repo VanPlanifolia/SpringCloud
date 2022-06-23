@@ -114,3 +114,64 @@ public class DeptConsumer_80 {
     }
 }
 ```
+
+5. Ribbon实现的负载均衡是在客户端上的，所以我们需要在客户端上引入Ribbon来进行负载均衡，需要引入对应的maven依赖，然后需要在启动类与config类中添加对应的注解信息，再修改yaml文件进行配置，最后将访问地址改成注册中心中的内容提供者的id即可，然后我们在启动这些服务，通过消费者来进行访问测试。
+
+* 5.1 先是引入maven依赖，eureka，ribbon。
+
+```xml
+        <!-- ribbon -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-ribbon</artifactId>
+            <version>1.4.6.RELEASE</version>
+        </dependency>
+        <!--starter-eureka -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-eureka</artifactId>
+            <version>1.4.6.RELEASE</version>
+        </dependency>
+```
+
+* 5.2 然后修改yaml文件的eureka配置信息
+
+```yaml
+eureka:
+  # 不向注册中心注册自己
+  client:
+    register-with-eureka: false
+    # 指明注册中心的地址
+    service-url:
+      defaultZone: http://eureka7002.com:7002/eureka/,http://eureka7001.com:7001/eureka/,http://eureka7003.com:7003/eureka/
+
+```
+
+* 5.3 修改config配置类，只需要添加一个注解
+
+```java
+@Configuration
+public class BeanConfig {
+    /**
+     * 把RestTemplate交给spring来托管
+     */
+    //用于Ribbon负载均衡的注解
+    @LoadBalanced
+    @Bean
+    public RestTemplate getRestTemplate(){
+        return new RestTemplate();
+    }
+}
+
+```
+
+* 5.4 修改controller中的访问地址由之前的写死修改为，注册中心注册服务的id。
+
+```java
+ //自动注入RestTemplate
+    @Autowired
+    private RestTemplate restTemplate;
+    public static final String REQUESTURL="http://SPRINGCLOUD-PROVIDER-DEPT/";
+```
+
+* 5.5 然后进行测试吧，测试通过消费者进行请求，是否能实现负载均衡的访问不同的提供者。
